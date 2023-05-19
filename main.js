@@ -1,0 +1,126 @@
+const express = require('express');
+const { render } = require('express/lib/response');
+const { lstat } = require('fs');
+const { platform } = require('os');
+const app = express();
+const http = require('http').createServer(app);
+
+const io = require('socket.io')(http);
+var canSend = false;
+
+app.use(express.static(__dirname + '/js'));
+
+var listaPlayers = [];
+
+const screenWidth = 1600;
+const screenHeight = 1400;
+const π = Math.PI;
+
+function newBall(idConnection){
+
+    return {
+
+        x : screenWidth/2,
+        y : screenHeight/2,
+        radius : 30,
+        angle : 0,
+        speed : 5,
+        id : idConnection,
+        dataInputs : {mouseX : screenWidth/2, mouseY : screenHeight/2, id : idConnection},
+        velocityX : 5 * Math.cos(90 * π/180),
+        velocityY: 5 * Math.sin(90 * π/180),
+    
+        color : "WHITE"
+
+
+
+
+    }
+
+}
+
+app.get('/', (req, res) =>{
+
+    res.sendFile(__dirname + '/index.html')
+    
+})
+
+io.on('connection', (io) =>{// eventod e conexão de um cliente
+    let id = io.id;
+    listaPlayers.push(newBall(io.id));//adiciona um objeto bola que vai representar o cliente conectado tendo a id de conexão e as informaçoes de input a ele relacionado
+
+    io.on('mouse',(data) => {//evento mouse
+        updateData(data, getCurrentBall(io.id));//altera as informações de input do cliente conectado no server
+        
+    });
+
+    io.on('atualiza',() =>{send(io.id)})//quando o evento atualizar for recebido o metodo send é executado
+
+    io.on('disconnect', () =>{
+
+        let vetorNovo = [];
+
+        for(let i = 0; i < listaPlayers.length;i++){
+            if(listaPlayers[i].id != id){
+                vetorNovo.push(listaPlayers[i]);
+            }
+        }
+
+        listaPlayers = vetorNovo;
+
+    });
+
+});
+
+
+
+function updateData(data, ball){//atualiza os dados de input de um determinado cliente
+    ball.dataInputs = data;
+    console.log(getCurrentBall(ball.id).dataInputs);
+}
+
+function send(id){//recebe o id de quem conectou
+
+    update(getCurrentBall(id).dataInputs);//passa os inputs do cliente para o server utilizar
+    io.emit('render', listaPlayers);//emite o evento render, com as informações dos players e do server
+
+}
+
+function getCurrentBall(id){//pega um player dentro do vetor lista players usando a id de conexão
+    for(let i = 0; i < listaPlayers.length; i++){
+
+        if(listaPlayers[i].id == id){
+            return listaPlayers[i];
+        }
+
+    }
+}
+
+function update(data){//update
+
+    let ball = getCurrentBall(data.id);
+
+    let distanceX = ball.x - data.mouseX;
+    let distanceY = ball.y - data.mouseY;
+
+    let sin = distanceY / (Math.sqrt((distanceX * distanceX) + (distanceY * distanceY)));
+    let cos = distanceX / (Math.sqrt((distanceX * distanceX) + (distanceY * distanceY)));
+    // console.log("sin=" +sin);
+    // console.log("cos=" +cos);
+
+    if(Math.abs((Math.sqrt((distanceX * distanceX) + (distanceY * distanceY))) > (ball.radius * 0.2))){
+
+        ball.velocityX = (ball.speed * cos) * -1//Math.cos(ball.angle * π/180);
+        ball.velocityY = (ball.speed * sin) //Math.sin(ball.angle* π/180);
+
+        ball.x += ball.velocityX * (Math.abs((Math.sqrt((distanceX * distanceX) + (distanceY * distanceY))))/100); 
+        ball.y -= ball.velocityY * (Math.abs((Math.sqrt((distanceX * distanceX) + (distanceY * distanceY))))/100);
+
+    }
+
+
+}
+
+http.listen(3000, () =>{
+    console.log("fdsfsdf");
+})
