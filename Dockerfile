@@ -15,4 +15,4 @@ COPY . /main
 RUN npm install
 
 # Define the entry point for the container
-CMD ["npm", "start"]
+CMD ["node", "main.js"]
