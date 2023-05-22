@@ -72,38 +72,6 @@ const com = {
 
 }
 
-function update(){
-    time++;
-
-    let distanceX = ball.x - mouseX;
-    let distanceY = ball.y - mouseY;
-    console.log("distanceX=" +distanceX);
-    console.log("distanceY=" +distanceY);
-
-    
-    console.log(distanceX + " distancia do player x");
-    console.log(distanceY + " distancia do player y");
-
-    let sin = distanceY / (Math.sqrt((distanceX * distanceX) + (distanceY * distanceY)));
-    let cos = distanceX / (Math.sqrt((distanceX * distanceX) + (distanceY * distanceY)));
-    // console.log("sin=" +sin);
-    // console.log("cos=" +cos);
-
-    if(Math.abs((Math.sqrt((distanceX * distanceX) + (distanceY * distanceY))) > (ball.radius * 0.2))){
-
-        ball.velocityX = (ball.speed * cos) * -1//Math.cos(ball.angle * π/180);
-        ball.velocityY = (ball.speed * sin) //Math.sin(ball.angle* π/180);
-
-        ball.x += ball.velocityX * (Math.abs((Math.sqrt((distanceX * distanceX) + (distanceY * distanceY))))/100); 
-        ball.y -= ball.velocityY * (Math.abs((Math.sqrt((distanceX * distanceX) + (distanceY * distanceY))))/100);
-
-    }
-
-    
-
-
-}
-
 socket.on('connect',()=>{//conexão do cliente
     id = socket.id;
     canvas.addEventListener('mousemove', (event) => {//event listener para pegar o movimento do mouse quando ele se move
