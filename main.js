@@ -47,13 +47,10 @@ function newBall(idConnection) {
             this.radius * 0.2
         )
       ) {
-        this.velocityX = this.speed * cos * -1; //Math.cos(ball.angle * π/180);
+        //this.velocityX = this.speed * cos * -1; //Math.cos(ball.angle * π/180);
         this.velocityY = this.speed * sin; //Math.sin(ball.angle* π/180);
 
-        this.x +=
-            this.velocityX *
-          (Math.abs(Math.sqrt(distanceX * distanceX + distanceY * distanceY)) /
-            100);
+        //this.x +=this.velocityX *(Math.abs(Math.sqrt(distanceX * distanceX + distanceY * distanceY)) /100);
             this.y -=
             this.velocityY *
           (Math.abs(Math.sqrt(distanceX * distanceX + distanceY * distanceY)) /
