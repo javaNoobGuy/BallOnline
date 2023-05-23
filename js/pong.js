@@ -75,7 +75,10 @@ socket.on('render', (data) =>{//atualiza as informações para renderização
 function game(){
 
     socket.emit('atualiza');//emite o evento atualiza
-    render(renderData);//renderiza em base nas informações passadas
+    if(renderData != undefined){
+        render(renderData);//renderiza em base nas informações passadas
+    }
+    
 
 }
 
