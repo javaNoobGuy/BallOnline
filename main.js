@@ -96,7 +96,7 @@ io.on("connection", (io) => {
 function updateData(data, ball) {
   //atualiza os dados de input de um determinado cliente
   ball.dataInputs = data;
-  console.log(getCurrentBall(ball.id).dataInputs);
+
 }
 
 function send(id) {

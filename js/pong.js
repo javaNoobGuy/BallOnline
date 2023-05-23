@@ -110,7 +110,6 @@ function render(data){
     for(let i = 0; i < data.length;i++){
 
         drawCircle(data[i].x, data[i].y, data[i].radius, data[i].color);
-        console.log('renderizou');
 
     }
     drawNet();
