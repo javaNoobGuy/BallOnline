@@ -123,13 +123,14 @@ function update(data) {
   //update
 
   let ball = getCurrentBall(data.id);
+  if(ball == listaPlayers[0]){
+      updateWorld();
+  }
   ball.tick();
 }
 
 http.listen(3000, async() => {
-  while(true){
-    updateWorld();
-  }
+  console.log('servidor rodando!');
 });
 
 
