@@ -65,7 +65,6 @@ socket.on('connect',()=>{//conexão do cliente
         
         socket.emit('mouse',{mouseX, mouseY, id});//emite o evento mouse, que carrega um objeto com as informações do mouse e o id de quem conectou
       });
-      socket.emit('start', {response:204});
       //socket.emit('mouse',{mouseX, mouseY, id});
 })
 
