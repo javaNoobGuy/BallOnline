@@ -81,8 +81,6 @@ io.on("connection", (io) => {
     send(io.id);
   }); //quando o evento atualizar for recebido o metodo send é executado
 
-  io.emit('start', {response:204});
-
   io.on("disconnect", () => {
     let vetorNovo = [];
 
