@@ -70,8 +70,8 @@ app.get("/", (req, res) => {
 io.on("connection", (io) => {
   // eventod e conexão de um cliente
   let id = io.id;
-  console.log('teste');
   listaPlayers.push(newBall(io.id)); //adiciona um objeto bola que vai representar o cliente conectado tendo a id de conexão e as informaçoes de input a ele relacionado
+  io.emit('start',{});
 
   io.on("mouse", (data) => {
     //evento mouse
