@@ -32,21 +32,6 @@ const net = {
 
 }
 
-const ball = {
-
-    x : screenWidth/2,
-    y : screenHeight/2,
-    radius : 30,
-    angle : 0,
-    speed : 5,
-    velocityX : 5 * Math.cos(90 * π/180),
-    velocityY: 5 * Math.sin(90 * π/180),
-
-    color : "WHITE"
-
-
-}
-
 const user = {
 
     x : 0,
@@ -99,8 +84,9 @@ function Updaterender(data){//atualizar as informações que cliente desenha
 }
 
 
-setInterval(game, 1000/50)//gameloop
-
+io.on('start',() =>{
+    setInterval(game, 1000/50)//gameloop
+})
 
 function render(data){
 

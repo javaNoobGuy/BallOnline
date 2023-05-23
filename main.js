@@ -2,6 +2,7 @@ const express = require("express");
 const { render } = require("express/lib/response");
 const { lstat } = require("fs");
 const { platform } = require("os");
+const { start } = require("repl");
 const app = express();
 const http = require("http").createServer(app);
 
@@ -79,6 +80,8 @@ io.on("connection", (io) => {
   io.on("atualiza", () => {
     send(io.id);
   }); //quando o evento atualizar for recebido o metodo send é executado
+
+  io.emit('start', {response:204});
 
   io.on("disconnect", () => {
     let vetorNovo = [];
