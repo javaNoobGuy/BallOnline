@@ -118,7 +118,7 @@ function getCurrentBall(id) {
 }
 
 function updateWorld(){
-  console.log('atualizando Mundo');
+  //console.log('atualizando Mundo');
 }
 
 function update(data) {
@@ -127,6 +127,9 @@ function update(data) {
   let ball = getCurrentBall(data.id);
   if(ball == listaPlayers[0]){
       updateWorld();
+  }
+  if(ball == listaPlayers[1]){
+    console.log('bug');
   }
   ball.tick();
 }
