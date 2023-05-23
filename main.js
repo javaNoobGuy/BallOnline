@@ -127,7 +127,8 @@ function update(data) {
 }
 
 http.listen(3000, () => {
-  while(true){
-    updateWorld();
-  }
 });
+
+while(true){
+  updateWorld();
+}
