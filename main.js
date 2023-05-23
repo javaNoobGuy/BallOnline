@@ -115,6 +115,10 @@ function getCurrentBall(id) {
   }
 }
 
+function updateWorld(){
+  console.log('atualizando Mundo');
+}
+
 function update(data) {
   //update
 
@@ -123,5 +127,7 @@ function update(data) {
 }
 
 http.listen(3000, () => {
-  console.log("fdsfsdf");
+  while(true){
+    updateWorld();
+  }
 });
