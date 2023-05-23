@@ -126,9 +126,10 @@ function update(data) {
   ball.tick();
 }
 
-http.listen(3000, () => {
+http.listen(3000, async() => {
+  while(true){
+    updateWorld();
+  }
 });
 
-while(true){
-  updateWorld();
-}
+
