@@ -71,11 +71,11 @@ io.on("connection", (socket) => {
   // eventod e conexão de um cliente
   let id = socket.id;
   listaPlayers.push(newBall(socket.id)); //adiciona um objeto bola que vai representar o cliente conectado tendo a id de conexão e as informaçoes de input a ele relacionado
-  io.emit('start',{});
+  socket.emit('start',{});
 
   socket.on("mouse", (data) => {
     //evento mouse
-    updateData(data, getCurrentBall(io.id)); //altera as informações de input do cliente conectado no server
+    updateData(data, getCurrentBall(socket.id)); //altera as informações de input do cliente conectado no server
   });
 
   socket.on("atualiza", () => {
