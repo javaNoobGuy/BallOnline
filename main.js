@@ -1,8 +1,4 @@
 const express = require("express");
-const { render } = require("express/lib/response");
-const { lstat } = require("fs");
-const { platform } = require("os");
-const { start } = require("repl");
 const app = express();
 const http = require("http").createServer(app);
 
@@ -82,7 +78,7 @@ io.on("connection", (socket) => {
     send(socket.id);
   }); //quando o evento atualizar for recebido o metodo send é executado
 
-  io.on("disconnect", () => {
+  socket.on("disconnect", () => {
     let vetorNovo = [];
 
     for (let i = 0; i < listaPlayers.length; i++) {
