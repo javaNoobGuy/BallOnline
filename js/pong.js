@@ -88,6 +88,7 @@ function Updaterender(data){//atualizar as informações que cliente desenha
 
 
 socket.on('start',() =>{
+    console.log('self id: ' + socket.id);
     setInterval(game, 1000/50)//gameloop
 })
 

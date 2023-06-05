@@ -71,7 +71,7 @@ io.on("connection", (socket) => {
   // eventod e conexão de um cliente
   let id = socket.id;
   listaPlayers.push(newBall(socket.id)); //adiciona um objeto bola que vai representar o cliente conectado tendo a id de conexão e as informaçoes de input a ele relacionado
-  socket.emit('start',{});
+  socket.emit('start',{teste: 'foi'});
 
   socket.on("mouse", (data) => {
     //evento mouse
