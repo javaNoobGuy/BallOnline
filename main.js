@@ -25,11 +25,36 @@ function newBall(idConnection) {
       mouseY: screenHeight / 2,
       id: idConnection,
     },
+    keyInputs: {
+
+      keyDown : 'none',
+
+    },
     velocityX: 5 * Math.cos((90 * π) / 180),
     velocityY: 5 * Math.sin((90 * π) / 180),
     tick: function () {
       let distanceX = this.x - this.dataInputs.mouseX;
       let distanceY = this.y - this.dataInputs.mouseY;
+
+      let angles = [0,0];
+      
+      if(this.keyInputs.keyDown == 'none'){
+        
+      }
+      console.log(this.keyInputs.keyDown);
+      if(this.keyInputs.keyDown == 'a'){
+        angles[1] = 180;
+      }else{this.keyInputs.keyDown == 'd'}{
+        angles[1] = 0;
+      }
+
+      if(this.keyInputs.keyDown == 'w'){
+        angles[0] = 90;
+      }else{this.keyInputs.keyDown == 's'}{
+        angles[0] = 270;
+      }
+
+      //console.log(angles)
 
       let sin =
         distanceY / Math.sqrt(distanceX * distanceX + distanceY * distanceY);
@@ -38,11 +63,18 @@ function newBall(idConnection) {
       // console.log("sin=" +sin);
       // console.log("cos=" +cos);
 
-      if (
+      if(this.keyInputs.keyDown != 'none'){
+        this.velocityX = this.speed * Math.cos(angles[1] * π/180);
+        this.velocityY = this.speed * Math.sin(angles[0] * π/180);
+        this.x += this.velocityX;
+        this.y += this.velocityY;
+      }
+
+      /*if (
         Math.abs(
           Math.sqrt(distanceX * distanceX + distanceY * distanceY) >
             this.radius * 0.2
-        )
+        ) && this.keyDown == 'none'
       ) {
         this.velocityX = this.speed * cos * -1; //Math.cos(ball.angle * π/180);
         this.velocityY = this.speed * sin; //Math.sin(ball.angle* π/180);
@@ -52,7 +84,7 @@ function newBall(idConnection) {
             this.velocityY *
           (Math.abs(Math.sqrt(distanceX * distanceX + distanceY * distanceY)) /
             100);
-      }
+      }*/
     },
 
     color: "WHITE",
@@ -67,7 +99,19 @@ io.on("connection", (socket) => {
   // eventod e conexão de um cliente
   let id = socket.id;
   listaPlayers.push(newBall(socket.id)); //adiciona um objeto bola que vai representar o cliente conectado tendo a id de conexão e as informaçoes de input a ele relacionado
-  io.emit('start',{teste: 'foi'});
+  socket.emit('start',{});
+
+  socket.on('keydown', (data) =>{
+
+    getCurrentBall(socket.id).keyInputs.keyDown = data.key;
+
+
+  });
+
+  socket.on('keyleave',()=>{
+    getCurrentBall(socket.id).keyInputs.keyDown = 'none';
+  })
+
 
   socket.on("mouse", (data) => {
     //evento mouse
@@ -75,7 +119,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("atualiza", () => {
-    send(socket.id);
+    send(socket.id, socket);
   }); //quando o evento atualizar for recebido o metodo send é executado
 
   socket.on("disconnect", () => {
@@ -97,11 +141,12 @@ function updateData(data, ball) {
 
 }
 
-function send(id) {
+function send(id, socket) {
   //recebe o id de quem conectou
 
   update(getCurrentBall(id).dataInputs); //passa os inputs do cliente para o server utilizar
-  socket.emit("render", listaPlayers); //emite o evento render, com as informações dos players e do server
+  
+  io.emit("render", listaPlayers); //emite o evento render, com as informações dos players e do server
 }
 
 function getCurrentBall(id) {
@@ -125,7 +170,7 @@ function update(data) {
       updateWorld();
   }
   if(ball == listaPlayers[1]){
-    console.log('bug');
+    
   }
   ball.tick();
 }

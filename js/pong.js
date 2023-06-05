@@ -1,3 +1,4 @@
+
 const canvas = document.getElementById("pong");
 const context = canvas.getContext("2d");
 
@@ -59,6 +60,19 @@ const com = {
 
 socket.on('connect',()=>{//conexão do cliente
     id = socket.id;
+    document.addEventListener('keydown', (event) =>{
+
+        console.log('event key down : ' + event.key);
+        let key = event.key;
+        socket.emit('keydown', {key});
+    });
+
+    document.addEventListener('keyup',() =>{
+        console.log('tecla solta')
+        socket.emit('keyleave');
+
+    })
+
     canvas.addEventListener('mousemove', (event) => {//event listener para pegar o movimento do mouse quando ele se move
         mouseX = event.clientX;//guarda o x e y do mouse em duas variaveis globais
         mouseY = event.clientY;
@@ -75,6 +89,7 @@ socket.on('render', (data) =>{//atualiza as informações para renderização
 function game(){
 
     socket.emit('atualiza');//emite o evento atualiza
+    console.log('entrou no loop');
     if(renderData != undefined){
         render(renderData);//renderiza em base nas informações passadas
     }
@@ -88,7 +103,6 @@ function Updaterender(data){//atualizar as informações que cliente desenha
 
 
 socket.on('start',() =>{
-    console.log('self id: ' + socket.id);
     setInterval(game, 1000/50)//gameloop
 })
 
