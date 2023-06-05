@@ -67,19 +67,19 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
-io.on("connection", (io) => {
+io.on("connection", (socket) => {
   // eventod e conexão de um cliente
-  let id = io.id;
-  listaPlayers.push(newBall(io.id)); //adiciona um objeto bola que vai representar o cliente conectado tendo a id de conexão e as informaçoes de input a ele relacionado
-  io.emit('start',{});
+  let id = socket.id;
+  listaPlayers.push(newBall(socket.id)); //adiciona um objeto bola que vai representar o cliente conectado tendo a id de conexão e as informaçoes de input a ele relacionado
+  socket.emit('start',{});
 
-  io.on("mouse", (data) => {
+  socket.on("mouse", (data) => {
     //evento mouse
     updateData(data, getCurrentBall(io.id)); //altera as informações de input do cliente conectado no server
   });
 
-  io.on("atualiza", () => {
-    send(io.id);
+  socket.on("atualiza", () => {
+    send(socket.id);
   }); //quando o evento atualizar for recebido o metodo send é executado
 
   io.on("disconnect", () => {
