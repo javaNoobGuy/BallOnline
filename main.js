@@ -101,7 +101,7 @@ function send(id) {
   //recebe o id de quem conectou
 
   update(getCurrentBall(id).dataInputs); //passa os inputs do cliente para o server utilizar
-  io.emit("render", listaPlayers); //emite o evento render, com as informações dos players e do server
+  socket.emit("render", listaPlayers); //emite o evento render, com as informações dos players e do server
 }
 
 function getCurrentBall(id) {
