@@ -74,7 +74,7 @@ function newBall(idConnection) {
         Math.abs(
           Math.sqrt(distanceX * distanceX + distanceY * distanceY) >
             this.radius * 0.2
-        ) && this.keyDown == 'none'
+        )
       ) {
         this.velocityX = this.speed * cos * -1; //Math.cos(ball.angle * π/180);
         this.velocityY = this.speed * sin; //Math.sin(ball.angle* π/180);
