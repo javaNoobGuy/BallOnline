@@ -63,14 +63,14 @@ function newBall(idConnection) {
       // console.log("sin=" +sin);
       // console.log("cos=" +cos);
 
-      if(this.keyInputs.keyDown != 'none'){
+      /*if(this.keyInputs.keyDown != 'none'){
         this.velocityX = this.speed * Math.cos(angles[1] * π/180);
         this.velocityY = this.speed * Math.sin(angles[0] * π/180);
         this.x += this.velocityX;
         this.y += this.velocityY;
-      }
+      }*/
 
-      /*if (
+      if (
         Math.abs(
           Math.sqrt(distanceX * distanceX + distanceY * distanceY) >
             this.radius * 0.2
@@ -84,7 +84,7 @@ function newBall(idConnection) {
             this.velocityY *
           (Math.abs(Math.sqrt(distanceX * distanceX + distanceY * distanceY)) /
             100);
-      }*/
+      }
     },
 
     color: "WHITE",
