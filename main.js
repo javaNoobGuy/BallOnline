@@ -129,9 +129,15 @@ class DefenderTeam1 extends Defender{
 
 }
 
-function Shoot(id, team){
+class Shoot{
+
+  constructor(x, y){
+    
+  }
 
 }
+
+class Shoot1 extends Shoot{}
 
 function Center(team){
 
