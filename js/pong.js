@@ -58,18 +58,30 @@ const com = {
 
 }
 
+var presed = false;
+
 socket.on('connect',()=>{//conexão do cliente
     id = socket.id;
     document.addEventListener('keydown', (event) =>{
-
-        console.log('event key down : ' + event.key);
         let key = event.key;
+
+        if(presed == false && event.key == "z"){
+            presed = true;
+            socket.emit('keyPre', {key, presed});
+            console.log('event key down : ' + event.key);
+        }
+
         socket.emit('keydown', {key});
     });
 
-    document.addEventListener('keyup',() =>{
-        console.log('tecla solta')
-        socket.emit('keyleave');
+    document.addEventListener('keyup',(event) =>{
+        console.log('tecla solta' + event.key);
+        let key = event.key;
+        if(presed == true && event.key == "z"){
+            presed = false;
+            socket.emit('keylea', {key, presed});  
+        }
+        socket.emit('keyleave', {key});
 
     })
 
@@ -113,29 +125,31 @@ function render(data){
     //drawRect(com.x, com.y, com.width, com.height, com.color);
     for(let i = 0; i < data.times[0].atackers.length;i++){
         let att = data.times[0].atackers[i];
-        console.log('desenhando');
         drawRect(att.x, att.y, att.width, att.height, "white");
 
     }
 
     for(let i = 0; i < data.times[0].defenders.length;i++){
         let att = data.times[0].defenders[i];
-        console.log('desenhando');
         drawRect(att.x, att.y, att.width, att.height, "white");
 
     }
 
     for(let i = 0; i < data.times[1].atackers.length;i++){
         let att = data.times[1].atackers[i];
-        console.log('desenhando');
         drawRect(att.x, att.y, att.width, att.height, "white");
 
     }
 
     for(let i = 0; i < data.times[1].defenders.length;i++){
         let att = data.times[1].defenders[i];
-        console.log('desenhando');
         drawRect(att.x, att.y, att.width, att.height, "white");
+
+    }
+
+    for(let i = 0; i < data.shoots.length;i++){
+        let sho = data.shoots[i] ;
+        drawRect(sho.x, sho.y, sho.width, sho.height, sho.color);
 
     }
 
@@ -170,7 +184,7 @@ function drawCircle(x, y, r, color){
     context.fillStyle = color;
     context.beginPath();
     context.arc(x, y, r ,0 , 2*Math.PI, false);
-     context.closePath();
+    context.closePath();
     context.fill()
 
 }
