@@ -109,13 +109,36 @@ socket.on('start',() =>{
 function render(data){
 
     drawRect(0, 0, screenWidth, screenHeight, "black")
-    drawRect(user.x, user.y, user.width, user.height, user.color);
-    drawRect(com.x, com.y, com.width, com.height, com.color);
-    for(let i = 0; i < data.length;i++){
-
-        drawCircle(data[i].x, data[i].y, data[i].radius, data[i].color);
+    //drawRect(user.x, user.y, user.width, user.height, user.color);
+    //drawRect(com.x, com.y, com.width, com.height, com.color);
+    for(let i = 0; i < data.times[0].atackers.length;i++){
+        let att = data.times[0].atackers[i];
+        console.log('desenhando');
+        drawRect(att.x, att.y, att.width, att.height, "white");
 
     }
+
+    for(let i = 0; i < data.times[0].defenders.length;i++){
+        let att = data.times[0].defenders[i];
+        console.log('desenhando');
+        drawRect(att.x, att.y, att.width, att.height, "white");
+
+    }
+
+    for(let i = 0; i < data.times[1].atackers.length;i++){
+        let att = data.times[1].atackers[i];
+        console.log('desenhando');
+        drawRect(att.x, att.y, att.width, att.height, "white");
+
+    }
+
+    for(let i = 0; i < data.times[1].defenders.length;i++){
+        let att = data.times[1].defenders[i];
+        console.log('desenhando');
+        drawRect(att.x, att.y, att.width, att.height, "white");
+
+    }
+
     drawNet();
     drawText(screenWidth/4, screenHeight/5, user.score, 'white', 75);
     drawText(3 * screenWidth/4, screenHeight/5, com.score, 'white', 75);

@@ -6,11 +6,136 @@ const io = require("socket.io")(http);
 
 app.use(express.static(__dirname + "/js"));
 
-var listaPlayers = [];
+var time1 = {atackers : [], defenders : [], centers : []};
+var time2 = {atackers : [], defenders : [], centers : []};
 
-const screenWidth = 1600;
-const screenHeight = 1400;
+var onlinePlayerOrder = [];
+var mundo = {times : [time1, time2], shoots : []};
+
+const screenWidth = 1200;
+const screenHeight = 900;
 const π = Math.PI;
+
+var teamadd = 0;
+var aod = 0;
+
+class Atacker{
+    constructor(){
+      this.keyDown = 'none';
+      this.direction = 0;
+      this.shooted = false;
+      this.width = 20;
+      this.height = 20;
+      this.x = 0;
+      this.y = 0;
+    }
+
+
+
+    tick(){
+
+      if(this.direction == -1){
+        this.y++;
+      }else if( this.direction == 1){
+        this.y--;
+      }
+
+      if(this.shooted = true){//atira
+        this.shooted = false;
+      }
+
+    }
+
+}
+
+class AtackerTeam0 extends Atacker{
+    
+    constructor(id){
+
+      super();
+      this.x = 0;
+      this.id = id;
+      this.y = screenHeight/2
+
+    }
+
+
+}
+
+class AtackerTeam1 extends Atacker{
+    
+  constructor(id){
+
+    super();
+    this.x = screenWidth - this.width;
+    this.id = id;
+    this.y = screenHeight/2
+
+  }
+
+
+}
+
+class Defender {
+
+  constructor(){
+    this.keyDown = 'none';
+    this.direction = 0;
+    this.width = 20;
+    this.height = 20;
+    this.x = 0;
+    this.y = 0;
+  }
+
+
+
+  tick(){
+
+    if(this.direction == -1){
+      this.y++;
+    }else if(this.direction == 1){
+      this.y--;
+    }
+
+  }
+
+}
+
+class DefenderTeam0 extends Defender{
+    
+  constructor(id){
+
+    super();
+    this.x = 0 + this.width * 2;
+    this.id = id;
+    this.y = screenHeight/2
+
+  }
+
+
+}
+
+class DefenderTeam1 extends Defender{
+    
+  constructor(id){
+
+    super();
+    this.x = screenWidth - (this.width * 3);
+    this.id = id;
+    this.y = screenHeight/2
+
+  }
+
+
+}
+
+function Shoot(id, team){
+
+}
+
+function Center(team){
+
+}
 
 function newBall(idConnection) {
   return {
@@ -35,26 +160,6 @@ function newBall(idConnection) {
     tick: function () {
       let distanceX = this.x - this.dataInputs.mouseX;
       let distanceY = this.y - this.dataInputs.mouseY;
-
-      let angles = [0,0];
-      
-      if(this.keyInputs.keyDown == 'none'){
-        
-      }
-      console.log(this.keyInputs.keyDown);
-      if(this.keyInputs.keyDown == 'a'){
-        angles[1] = 180;
-      }else{this.keyInputs.keyDown == 'd'}{
-        angles[1] = 0;
-      }
-
-      if(this.keyInputs.keyDown == 'w'){
-        angles[0] = 90;
-      }else{this.keyInputs.keyDown == 's'}{
-        angles[0] = 270;
-      }
-
-      //console.log(angles)
 
       let sin =
         distanceY / Math.sqrt(distanceX * distanceX + distanceY * distanceY);
@@ -98,40 +203,110 @@ app.get("/", (req, res) => {
 io.on("connection", (socket) => {
   // eventod e conexão de um cliente
   let id = socket.id;
-  listaPlayers.push(newBall(socket.id)); //adiciona um objeto bola que vai representar o cliente conectado tendo a id de conexão e as informaçoes de input a ele relacionado
+
+  if(aod == 0){// add atacker
+    if(teamadd == 0){
+      mundo.times[teamadd].atackers.push(new AtackerTeam0(id));
+    }else if(teamadd == 1){
+      mundo.times[teamadd].atackers.push(new AtackerTeam1(id));
+    }
+    aod++;
+  }else if(aod == 1){// add defender
+
+    if(teamadd == 0){
+      mundo.times[teamadd].defenders.push(new DefenderTeam0(id));
+    }else if(teamadd == 1){
+      mundo.times[teamadd].defenders.push(new DefenderTeam1(id));
+    }
+    aod++;
+  }
+
+  if(aod > 1){
+    aod = 0;
+    teamadd++;
+  }
+
+  if(teamadd > 1){
+    teamadd = 0;
+  }
+  
+  onlinePlayerOrder.push[socket.id];
   socket.emit('start',{});
 
   socket.on('keydown', (data) =>{
 
-    getCurrentBall(socket.id).keyInputs.keyDown = data.key;
-
+    if(data.key == "w"){
+      getCurrentPlayer(socket.id).direction = 1;
+    }else if(data.key == "s"){
+      getCurrentPlayer(socket.id).direction = -1;
+    }
 
   });
 
   socket.on('keyleave',()=>{
-    getCurrentBall(socket.id).keyInputs.keyDown = 'none';
+    getCurrentPlayer(socket.id).direction = 0;
   })
 
 
-  socket.on("mouse", (data) => {
+  /*socket.on("mouse", (data) => {
     //evento mouse
-    updateData(data, getCurrentBall(socket.id)); //altera as informações de input do cliente conectado no server
-  });
+    updateData(data, getCurrentPlayer(socket.id)); //altera as informações de input do cliente conectado no server
+  });*/
 
   socket.on("atualiza", () => {
-    send(socket.id, socket);
+    send(socket.id);
   }); //quando o evento atualizar for recebido o metodo send é executado
 
-  socket.on("disconnect", () => {
+  function deleteItem(lista, item){
     let vetorNovo = [];
 
-    for (let i = 0; i < listaPlayers.length; i++) {
-      if (listaPlayers[i].id != id) {
-        vetorNovo.push(listaPlayers[i]);
+    for (let i = 0; i < lista.length; i++) {
+      if (lista[i].id != item.id) {
+        vetorNovo.push(lista[i]);
       }
     }
 
-    listaPlayers = vetorNovo;
+    lista = vetorNovo;
+    return lista;
+  }
+
+  socket.on("disconnect", () => {
+    let id = socket.id;
+    let vetorNovo = [];
+
+    for (let i = 0; i < onlinePlayerOrder.length; i++) {
+      if (onlinePlayerOrder[i].id != id) {
+        vetorNovo.push(onlinePlayerOrder[i]);
+      }
+    }
+
+    onlinePlayerOrder = vetorNovo;
+
+    let lista = undefined;
+    let player = getCurrentPlayer(id);
+
+    if(mundo.times[0].atackers.includes(player)){
+
+      lista = mundo.times[0].atackers;
+      mundo.times[0].atackers = deleteItem(lista, player);
+
+    }else if(mundo.times[0].defenders.includes(player)){
+
+      lista = mundo.times[0].defenders;
+      mundo.times[0].defenders = deleteItem(lista, player);
+
+    }else if(mundo.times[1].atackers.includes(player)){
+
+      lista = mundo.times[1].atackers;
+      mundo.times[1].atackers = deleteItem(lista, player);
+
+    } else if(mundo.times[1].defenders.includes(player)){
+
+      lista = mundo.times[1].defenders
+      mundo.times[1].defenders = deleteItem(lista, player);
+
+    }
+
   });
 });
 
@@ -141,38 +316,60 @@ function updateData(data, ball) {
 
 }
 
-function send(id, socket) {
+function send(id) {
   //recebe o id de quem conectou
 
-  update(getCurrentBall(id).dataInputs); //passa os inputs do cliente para o server utilizar
+  update(getCurrentPlayer(id)); //passa o player para o server atualizar
   
-  io.emit("render", listaPlayers); //emite o evento render, com as informações dos players e do server
+  io.emit("render", mundo); //emite o evento render, com as informações dos players e do server
 }
 
-function getCurrentBall(id) {
+function getCurrentPlayer(id) {
   //pega um player dentro do vetor lista players usando a id de conexão
-  for (let i = 0; i < listaPlayers.length; i++) {
-    if (listaPlayers[i].id == id) {
-      return listaPlayers[i];
+  for (let i = 0; i < mundo.times[0].atackers.length; i++) {
+    if (mundo.times[0].atackers[i].id == id) {
+      return mundo.times[0].atackers[i];
     }
   }
+
+  for (let i = 0; i < mundo.times[0].defenders.length; i++) {
+    if (mundo.times[0].defenders[i].id == id) {
+      return mundo.times[0].defenders[i];
+    }
+  }
+
+  for (let i = 0; i < mundo.times[1].atackers.length; i++) {
+    if (mundo.times[1].atackers[i].id == id) {
+      return mundo.times[1].atackers[i];
+    }
+  }
+
+  for (let i = 0; i < mundo.times[1].defenders.length; i++) {
+    if (mundo.times[1].defenders[i].id == id) {
+      return mundo.times[1].defenders[i];
+    }
+  }
+
+
 }
 
 function updateWorld(){
-  //console.log('atualizando Mundo');
+  for(let i = 0; i < mundo.shoots.length;i++){
+
+    shoots[i].tick();
+
+  }
 }
 
-function update(data) {
+function update(player) {
   //update
 
-  let ball = getCurrentBall(data.id);
-  if(ball == listaPlayers[0]){
+
+  if(player.id == onlinePlayerOrder[0]){
       updateWorld();
   }
-  if(ball == listaPlayers[1]){
-    
-  }
-  ball.tick();
+
+  player.tick();
 }
 
 http.listen(3000, async() => {
