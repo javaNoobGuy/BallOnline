@@ -2,8 +2,8 @@
 const canvas = document.getElementById("pong");
 const context = canvas.getContext("2d");
 
-const screenWidth = 1600;
-const screenHeight = 1400;
+const screenWidth = 1200;
+const screenHeight = 900;
 const π = Math.PI;
 
 var time = 0;
@@ -153,9 +153,15 @@ function render(data){
 
     }
 
+    for(let i = 0; i < data.targets.length;i++){
+        let sho = data.targets[i] ;
+        drawRect(sho.x, sho.y, sho.width, sho.height, "white");
+
+    }
+
     drawNet();
-    drawText(screenWidth/4, screenHeight/5, user.score, 'white', 75);
-    drawText(3 * screenWidth/4, screenHeight/5, com.score, 'white', 75);
+    drawText(screenWidth/4, screenHeight/5, data.times[0].pts, 'white', 75);
+    drawText(3 * screenWidth/4, screenHeight/5, data.times[1].pts, 'white', 75);
 
 
 }

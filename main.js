@@ -6,11 +6,11 @@ const io = require("socket.io")(http);
 
 app.use(express.static(__dirname + "/js"));
 
-var time1 = {atackers : [], defenders : [], centers : []};
-var time2 = {atackers : [], defenders : [], centers : []};
+var time1 = {atackers : [], defenders : [], pts: 0};
+var time2 = {atackers : [], defenders : [], pts: 0};
 
 var onlinePlayerOrder = [];
-var mundo = {times : [time1, time2], shoots : []};
+var mundo = {times : [time1, time2], shoots : [], targets : []};
 
 const screenWidth = 1200;
 const screenHeight = 900;
@@ -18,10 +18,50 @@ const π = Math.PI;
 
 var teamadd = 0;
 var aod = 0;
+
+var frames = 0;
+
+class target {
+
+  constructor(x, y){
+
+    this.width = 20;
+    this.height = 20;
+    this.dead = false;
+    this.id = undefined;
+    this.x = x;
+    this.y = y;
+
+  }
+
+  tick(){
+
+    for(let i = 0; i < mundo.shoots.length;i++){
+
+      let currentShoot = mundo.shoots[i];
+      let distanceX = this.x - currentShoot.x;
+      let distanceY = this.y - currentShoot.y;
+
+      if( Math.abs(
+        Math.sqrt(distanceX * distanceX + distanceY * distanceY)) <
+          20
+      
+    ){
+        this.dead = true;
+        mundo.times[currentShoot.team].pts++;
+        currentShoot.dead = true;
+        
+      }
+
+    }
+
+
+  }
+
+}
 class Atacker{
     constructor(){
       this.keyDown = 'none';
-      this.life = 3;
       this.direction = 0;
       this.shooted = false;
       this.team = undefined;
@@ -39,47 +79,6 @@ class Atacker{
         this.y++;
       }else if(this.direction == 1){
         this.y--;
-      }
-
-      //checa colisao com tiros
-
-      for(let i = 0; i < mundo.shoots.length;i++){
-        let currentShoot = mundo.shoots[i];
-          if( currentShoot.di == 1 && currentShoot.x == this.x){
-             console.log('teste');
-             currentShoot.di = 0;
-            let vetorNovo = [];
-
-            for (let i = 0; i < mundo.shoots.length; i++) {
-              if (mundo.shoots[i].id != currentShoot.id) {
-                mundo.shoots[i].id = vetorNovo.length;
-                vetorNovo.push(mundo.shoots[i]);
-              }
-            }
-        
-            mundo.shoots = vetorNovo;
-
-
-          }
-
-          if( currentShoot.di == -1 && currentShoot.y - currentShoot.height > this.y && currentShoot.y - currentShoot.height < this.y - this.height && currentShoot.x< this.x && currentShoot.x > this.x - this.width && currentShoot.team != this.team){
-            console.log('teste');
-           let vetorNovo = [];
-
-           for (let i = 0; i < mundo.shoots.length; i++) {
-             if (mundo.shoots[i].id != currentShoot.id) {
-               mundo.shoots[i].id = vetorNovo.length;
-               vetorNovo.push(mundo.shoots[i]);
-             }
-           }
-       
-           mundo.shoots = vetorNovo;
-
-
-         }
-
-
-
       }
 
       if(this.shooted == true){//atira
@@ -138,7 +137,6 @@ class Defender {
     this.keyDown = 'none';
     this.direction = 0;
     this.shooted = false;
-    this.life = 3;
     this.team = undefined;
     this.width = 20;
     this.height = 20;
@@ -211,6 +209,7 @@ class Shoot{
   constructor(x, y){
     this.di = 0;
     this.id = 0;
+    this.dead = false;
     this.x = x;
     this.y = y;
     this.team = undefined;
@@ -249,10 +248,6 @@ class Shoot1 extends Shoot{
   }
 
   
-}
-
-function Center(team){
-
 }
 
 function newBall(idConnection) {
@@ -489,16 +484,58 @@ function updateWorld(){
 
 }
 
+function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
 function update(player) {
   //update
+
+  frames++;
+  if(frames >= 50 * 20){
+    console.log(mundo.targets);
+    frames = 0;
+    let alvo = new target(getRandomArbitrary(100,800), getRandomArbitrary(0,700));
+    alvo.id = mundo.targets.length;
+    mundo.targets.push(alvo);
+
+  }
 
   player.tick();
 
   for(let i = 0; i < mundo.shoots.length;i++){
-
-    mundo.shoots[i].tick();
+    if(mundo.shoots[i].dead == false){
+      mundo.shoots[i].tick();
+    }
 
   }
+
+  for(let i = 0; i < mundo.targets.length;i++){
+    if(mundo.targets[i].dead == false){
+      mundo.targets[i].tick();
+    }
+
+  }
+
+  let vetorNovo = [];
+
+  for (let i = 0; i < mundo.shoots.length; i++) {
+    if (mundo.shoots[i].dead != true) {
+      mundo.shoots[i].id = mundo.shoots.length
+      vetorNovo.push(mundo.shoots[i]);
+    }
+  }
+  mundo.shoots = vetorNovo;
+
+  vetorNovo = [];
+
+  for (let i = 0; i < mundo.targets.length; i++) {
+    if (mundo.targets[i].dead != true) {
+      mundo.targets[i].id = mundo.targets.length
+      vetorNovo.push(mundo.targets[i]);
+    }
+  }
+  mundo.targets = vetorNovo;
 
   if(player.id == onlinePlayerOrder[0]){
     updateWorld();
