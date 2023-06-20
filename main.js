@@ -76,7 +76,7 @@ class Atacker{
 
     tick(){
 
-      if(this.direction == -1){
+      if(this.direction == -1 && this.y < screenHeight - this.height){
         this.y+= this.speed;
       }else if(this.direction == 1){
         this.y-= this.speed;

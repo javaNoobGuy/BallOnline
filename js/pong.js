@@ -123,27 +123,46 @@ function render(data){
     drawRect(0, 0, screenWidth, screenHeight, "black")
     //drawRect(user.x, user.y, user.width, user.height, user.color);
     //drawRect(com.x, com.y, com.width, com.height, com.color);
+    
     for(let i = 0; i < data.times[0].atackers.length;i++){
         let att = data.times[0].atackers[i];
-        drawRect(att.x, att.y, att.width, att.height, "white");
+
+        if(socket.id == att.id){
+            console.log(socket.id);
+            drawRect(att.x, att.y, att.width, att.height, "yellow");
+        }else{
+            drawRect(att.x, att.y, att.width, att.height, "white");
+        }
 
     }
 
     for(let i = 0; i < data.times[0].defenders.length;i++){
         let att = data.times[0].defenders[i];
-        drawRect(att.x, att.y, att.width, att.height, "white");
+        if(socket.id == att.id){
+            drawRect(att.x, att.y, att.width, att.height, "yellow");
+        }else{
+            drawRect(att.x, att.y, att.width, att.height, "white");
+        }
 
     }
 
     for(let i = 0; i < data.times[1].atackers.length;i++){
         let att = data.times[1].atackers[i];
-        drawRect(att.x, att.y, att.width, att.height, "white");
+        if(socket.id == att.id){
+            drawRect(att.x, att.y, att.width, att.height, "yellow");
+        }else{
+            drawRect(att.x, att.y, att.width, att.height, "white");
+        }
 
     }
 
     for(let i = 0; i < data.times[1].defenders.length;i++){
         let att = data.times[1].defenders[i];
-        drawRect(att.x, att.y, att.width, att.height, "white");
+        if(socket.id == att.id){
+            drawRect(att.x, att.y, att.width, att.height, "yellow");
+        }else{
+            drawRect(att.x, att.y, att.width, att.height, "white");
+        }
 
     }
 
