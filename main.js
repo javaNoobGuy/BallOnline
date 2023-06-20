@@ -495,7 +495,7 @@ function update(player) {
   //update
 
   frames++;
-  if(frames >= 50 * 20){
+  if(frames >= 50 * 20 && mundo.targets.length < 10){
     console.log(mundo.targets);
     frames = 0;
     let alvo = new target(getRandomArbitrary(100,800), getRandomArbitrary(0,700));
