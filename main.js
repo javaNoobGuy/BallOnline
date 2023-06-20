@@ -139,6 +139,7 @@ class Defender {
     this.direction = 0;
     this.shooted = false;
     this.team = undefined;
+    this.speed = 5;
     this.width = 20;
     this.height = 20;
     this.x = 0;
