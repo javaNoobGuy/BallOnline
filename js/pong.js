@@ -70,7 +70,7 @@ socket.on('connect',()=>{//conexão do cliente
             socket.emit('keyPre', {key, presed});
             console.log('event key down : ' + event.key);
         }
-
+        console.log('event key down : ' + event.key);
         socket.emit('keydown', {key});
     });
 

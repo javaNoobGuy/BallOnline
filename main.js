@@ -225,6 +225,14 @@ class Shoot{
 
     this.x += this.di * this.speed;
 
+    if(this.x > screenWidth){
+      this.dead = true;
+    }
+
+    if(this.x < 0 - this.width){
+      this.dead = true;
+    }
+
 
   }
 
@@ -495,21 +503,21 @@ function update(player) {
   //update
 
   frames++;
-
-  if(frames >= 50 * 20 && mundo.targets.length < 10){
+ 
+  if(frames >= 50 * 20){
     console.log(mundo.targets);
-    frames = 0;
-    let alvo = new target(getRandomArbitrary(100,800), getRandomArbitrary(0,700));
-    alvo.id = mundo.targets.length;
-    mundo.targets.push(alvo);
-
-  }
-
-  if(frames >= 50){
+    if(mundo.targets.length < 10){
+      let alvo = new target(getRandomArbitrary(100,800), getRandomArbitrary(0,700));
+      console.log(frames);
+      alvo.id = mundo.targets.length;
+      mundo.targets.push(alvo);
+    }
     frames = 0;
   }
 
   player.tick();
+
+  console.log(mundo.shoots.length);
 
   for(let i = 0; i < mundo.shoots.length;i++){
     if(mundo.shoots[i].dead == false){
