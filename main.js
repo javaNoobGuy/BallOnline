@@ -6,22 +6,36 @@ const io = require("socket.io")(http);
 
 app.use(express.static(__dirname + "/js"));
 
-var time1 = {atackers : [], defenders : [], pts: 0};
-var time2 = {atackers : [], defenders : [], pts: 0};
-
-var onlinePlayerOrder = [];
-var mundo = {times : [time1, time2], shoots : [], targets : []};
-
 const screenWidth = 1200;
 const screenHeight = 900;
+
+var time1 = {atackers : [], defenders : [], pts: 0, qtdG : 0};
+var time2 = {atackers : [], defenders : [], pts: 0, qtdG : 0};
+
+var onlinePlayerOrder = [];
+
+
+class Text{
+  constructor(x, y, text, color, font){
+    this.x = x;
+    this.y = y;
+    this.text = text;
+    this.color = color;
+    this.font = font;
+  }
+}
+
+
+var mundo = {times : [time1, time2], shoots : [], targets : [], ptsW : 10, winMessage : new Text(screenWidth/4, screenHeight/5, '', 'green', 75)};
+
 const π = Math.PI;
 
 var teamadd = 0;
 var aod = 0;
 
 var frames = 0;
+var framesw = 0;
 var timesUpdated = 0;
-
 class target {
 
   constructor(x, y){
@@ -49,7 +63,7 @@ class target {
       
     ){
         this.dead = true;
-        mundo.times[currentShoot.team].pts++;
+        mundo.times[currentShoot.team].pts+=1;
         currentShoot.dead = true;
         
       }
@@ -497,8 +511,20 @@ function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
 }
 
+var someoneWinned = false;
+
 function updateWorld(){
   frames++;
+
+  if(someoneWinned){
+    framesw++;
+  }
+
+  if(framesw > 50 * 30){
+    someoneWinned = false;
+    mundo.winMessage = new Text(screenWidth/4, 2 * screenHeight/5, '', 'green', 75);
+    framesw = 0;
+  }
  
   if(frames >= 50 * 20){
     console.log(mundo.targets);
@@ -555,6 +581,23 @@ function update(player) {
   if(player.id == onlinePlayerOrder[0]){
     timesUpdated = true;
     console.log('teste');
+  }
+
+  if(mundo.ptsW <= mundo.times[0].pts){
+    mundo.times[0].pts = 0;
+    mundo.times[1].pts = 0;
+
+    mundo.times[0].qtdG++;
+    mundo.winMessage = new Text(screenWidth/4, 2 * screenHeight/5, 'GANHOU!', 'green', 75);
+    someoneWinned = true;
+    
+  }else if(mundo.ptsW <= mundo.times[1].pts){
+    mundo.times[0].pts = 0;
+    mundo.times[1].pts = 0;
+
+    mundo.times[1].qtdG++;
+    mundo.winMessage = new Text(2 * screenWidth/4,  2 * screenHeight/5, 'GANHOU!', 'green', 75);
+    someoneWinned = true;
   }
 
   if(timesUpdated == true){

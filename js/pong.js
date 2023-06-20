@@ -177,9 +177,12 @@ function render(data){
         drawRect(sho.x, sho.y, sho.width, sho.height, "white");
 
     }
+    drawText(data.winMessage.x, data.winMessage.y, data.winMessage.text, data.winMessage.color, data.winMessage.font);
 
     drawNet();
     drawText(screenWidth/4, screenHeight/5, data.times[0].pts, 'white', 75);
+    drawText(3 * screenWidth/4, (screenHeight/5) + 78, data.times[1].qtdG, 'white', 45);
+    drawText(screenWidth/4, (screenHeight/5) + 78, data.times[0].qtdG, 'white', 45);
     drawText(3 * screenWidth/4, screenHeight/5, data.times[1].pts, 'white', 75);
 
 
