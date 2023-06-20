@@ -495,6 +495,7 @@ function update(player) {
   //update
 
   frames++;
+
   if(frames >= 50 * 20 && mundo.targets.length < 10){
     console.log(mundo.targets);
     frames = 0;
@@ -502,6 +503,10 @@ function update(player) {
     alvo.id = mundo.targets.length;
     mundo.targets.push(alvo);
 
+  }
+
+  if(frames >= 50){
+    frames = 0;
   }
 
   player.tick();
