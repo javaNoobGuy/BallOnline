@@ -150,9 +150,9 @@ class Defender {
 
   tick(){
 
-    if(this.direction == -1){
+    if(this.direction == -1 && this.y < screenHeight - this.height){
       this.y+= this.speed;
-    }else if(this.direction == 1){
+    }else if(this.direction == 1 && this.y > 0){
       this.y-= this.speed;
     }
 
