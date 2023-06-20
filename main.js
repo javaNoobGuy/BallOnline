@@ -64,6 +64,7 @@ class Atacker{
       this.keyDown = 'none';
       this.direction = 0;
       this.shooted = false;
+      this.speed = 5;
       this.team = undefined;
       this.width = 20;
       this.height = 20;
@@ -76,9 +77,9 @@ class Atacker{
     tick(){
 
       if(this.direction == -1){
-        this.y++;
+        this.y+= this.speed;
       }else if(this.direction == 1){
-        this.y--;
+        this.y-= this.speed;
       }
 
       if(this.shooted == true){//atira
@@ -149,9 +150,9 @@ class Defender {
   tick(){
 
     if(this.direction == -1){
-      this.y++;
+      this.y+= this.speed;
     }else if(this.direction == 1){
-      this.y--;
+      this.y-= this.speed;
     }
 
     if(this.shooted == true){//atira
@@ -211,6 +212,7 @@ class Shoot{
     this.id = 0;
     this.dead = false;
     this.x = x;
+    this.speed = 10;
     this.y = y;
     this.team = undefined;
     this.width = 20;
@@ -220,7 +222,7 @@ class Shoot{
 
   tick(){
 
-    this.x += this.di;
+    this.x += this.di * this.speed;
 
 
   }
