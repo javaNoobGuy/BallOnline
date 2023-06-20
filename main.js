@@ -20,6 +20,7 @@ var teamadd = 0;
 var aod = 0;
 
 var frames = 0;
+var timesUpdated = 0;
 
 class target {
 
@@ -354,7 +355,8 @@ io.on("connection", (socket) => {
     teamadd = 0;
   }
   
-  onlinePlayerOrder.push[socket.id];
+  onlinePlayerOrder.push(id);
+  console.log(onlinePlayerOrder);
   socket.emit('start',{});
 
   socket.on('keydown', (data) =>{
@@ -413,7 +415,7 @@ io.on("connection", (socket) => {
     let vetorNovo = [];
 
     for (let i = 0; i < onlinePlayerOrder.length; i++) {
-      if (onlinePlayerOrder[i].id != id) {
+      if (onlinePlayerOrder[i] != id) {
         vetorNovo.push(onlinePlayerOrder[i]);
       }
     }
@@ -491,17 +493,11 @@ function getCurrentPlayer(id) {
 
 }
 
-function updateWorld(){
-
-}
-
 function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-function update(player) {
-  //update
-
+function updateWorld(){
   frames++;
  
   if(frames >= 50 * 20){
@@ -514,10 +510,6 @@ function update(player) {
     }
     frames = 0;
   }
-
-  player.tick();
-
-  console.log(mundo.shoots.length);
 
   for(let i = 0; i < mundo.shoots.length;i++){
     if(mundo.shoots[i].dead == false){
@@ -553,11 +545,27 @@ function update(player) {
   }
   mundo.targets = vetorNovo;
 
+}
+
+function update(player) {
+  //update
+
+  console.log(onlinePlayerOrder[0]);
+  
   if(player.id == onlinePlayerOrder[0]){
-    updateWorld();
+    timesUpdated = true;
+    console.log('teste');
   }
 
-
+  if(timesUpdated == true){
+    for(let i  = 0; i < onlinePlayerOrder.length; i++ ){
+      let currentPlayer = getCurrentPlayer(onlinePlayerOrder[i]);
+      currentPlayer.tick(); 
+    }
+    updateWorld();
+    timesUpdated = false;
+  }
+  
 }
 
 http.listen(3000, async() => {

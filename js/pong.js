@@ -68,14 +68,14 @@ socket.on('connect',()=>{//conexão do cliente
         if(presed == false && event.key == "z"){
             presed = true;
             socket.emit('keyPre', {key, presed});
-            console.log('event key down : ' + event.key);
+            //console.log('event key down : ' + event.key);
         }
-        console.log('event key down : ' + event.key);
+        //console.log('event key down : ' + event.key);
         socket.emit('keydown', {key});
     });
 
     document.addEventListener('keyup',(event) =>{
-        console.log('tecla solta' + event.key);
+        //console.log('tecla solta' + event.key);
         let key = event.key;
         if(presed == true && event.key == "z"){
             presed = false;
@@ -101,7 +101,7 @@ socket.on('render', (data) =>{//atualiza as informações para renderização
 function game(){
 
     socket.emit('atualiza');//emite o evento atualiza
-    console.log('entrou no loop');
+    //console.log('entrou no loop');
     if(renderData != undefined){
         render(renderData);//renderiza em base nas informações passadas
     }
@@ -195,7 +195,8 @@ function drawNet(){
     }
 }
 
-
+function pageHided()
+{console.log('issooo')};
 function drawRect(x, y, w, h, color){
 
     context.fillStyle = color;
