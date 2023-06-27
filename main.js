@@ -14,7 +14,6 @@ var time2 = {atackers : [], defenders : [], pts: 0, qtdG : 0};
 
 var onlinePlayerOrder = [];
 
-
 class Text{
   constructor(x, y, text, color, font){
     this.x = x;
@@ -407,8 +406,10 @@ io.on("connection", (socket) => {
     updateData(data, getCurrentPlayer(socket.id)); //altera as informações de input do cliente conectado no server
   });*/
 
-  socket.on("atualiza", () => {
-    send(socket.id);
+  socket.on("atualiza", (data) => {
+    console.log(data);
+    send(socket.id, data);
+
   }); //quando o evento atualizar for recebido o metodo send é executado
 
   function deleteItem(lista, item){
@@ -470,10 +471,10 @@ function updateData(data, ball) {
 
 }
 
-function send(id) {
+function send(id, data) {
   //recebe o id de quem conectou
 
-  update(getCurrentPlayer(id)); //passa o player para o server atualizar
+  update(getCurrentPlayer(id), data); //passa o player para o server atualizar
   
   io.emit("render", mundo); //emite o evento render, com as informações dos players e do server
 }
@@ -573,12 +574,13 @@ function updateWorld(){
 
 }
 
-function update(player) {
+function update(player, data) {
   //update
 
-  console.log(onlinePlayerOrder[0]);
+  //console.log(onlinePlayerOrder[0]);
   
   if(player.id == onlinePlayerOrder[0]){
+    console.log(data.time);
     timesUpdated = true;
     console.log('teste');
   }
@@ -607,12 +609,13 @@ function update(player) {
     }
     updateWorld();
     timesUpdated = false;
+    
   }
   
 }
 
 http.listen(3000, async() => {
-  console.log('servidor rodando!');
+  
 });
 
 

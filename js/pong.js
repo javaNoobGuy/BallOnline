@@ -98,9 +98,14 @@ socket.on('render', (data) =>{//atualiza as informações para renderização
     Updaterender(data);
 })
 
-function game(){
+let timeall = 0;z1
 
-    socket.emit('atualiza');//emite o evento atualiza
+function game(){
+    let date = new Date();
+    let time = date.getMilliseconds();
+    timeall = time;
+    console.log(timeall);
+    socket.emit('atualiza', {timeall});//emite o evento atualiza
     //console.log('entrou no loop');
     if(renderData != undefined){
         render(renderData);//renderiza em base nas informações passadas
