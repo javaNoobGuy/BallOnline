@@ -98,7 +98,7 @@ socket.on('render', (data) =>{//atualiza as informações para renderização
     Updaterender(data);
 })
 
-let timeall = 0;z1
+let timeall = 0;
 
 function game(){
     let date = new Date();
